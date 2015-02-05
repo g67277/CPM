@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/signup_username"
+        android:layout_marginTop="152dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:id="@+id/signup_email"
+        android:layout_alignBottom="@+id/signup_username"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="46dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/signup_password"
+        android:layout_below="@+id/signup_username"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="28dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Sign Up!"
+        android:id="@+id/signup_button"
+        android:layout_below="@+id/signup_password"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="124dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign In"
+        android:id="@+id/SignINSecondary"
+        android:layout_below="@+id/signup_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="47dp" />
+</RelativeLayout>
