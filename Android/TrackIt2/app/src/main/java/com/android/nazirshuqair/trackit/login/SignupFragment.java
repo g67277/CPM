@@ -3,6 +3,7 @@ package com.android.nazirshuqair.trackit.login;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +25,7 @@ public class SignupFragment extends Fragment {
     EditText pass;
     Button signupBtn;
 
-    boolean goodAccount;
+    boolean goodEmail, goodUserName, goodPassword;
 
     //This is to create a new instance of the fragment
     public static SignupFragment newInstance() {
@@ -67,32 +68,36 @@ public class SignupFragment extends Fragment {
                 if (email.getText().length() < 1){
                     email.setHint("Required");
                     email.setHintTextColor(getResources().getColor(R.color.material_deep_teal_500));
-                    goodAccount = false;
-                }else {
-                    goodAccount = true;
+                    goodEmail = false;
+                }else if (!isEmailValid(email.getText().toString())){
+                    email.setText("");
+                    email.setHint(Html.fromHtml("<font color='#FF0000'>Please enter a valid email</font> "));
+                    goodEmail = false;
+                } else{
+                    goodEmail = true;
                 }
                 if (username.getText().length() < 1){
                     username.setHint("Required");
                     username.setHintTextColor(getResources().getColor(R.color.material_deep_teal_500));
-                    goodAccount = false;
+                    goodUserName = false;
                 }else {
-                    goodAccount = true;
+                    goodUserName = true;
                 }
                 if (pass.getText().length() < 1){
                     pass.setHint("Required");
                     pass.setHintTextColor(getResources().getColor(R.color.material_deep_teal_500));
-                    goodAccount = false;
+                    goodPassword = false;
                 }else {
                     if (pass.getText().length() < 4) {
                         pass.setText("");
                         pass.setHint("Password is too short");
-                        goodAccount = false;
+                        goodPassword = false;
                     }else {
-                        goodAccount = true;
+                        goodPassword = true;
                     }
                 }
 
-                if (goodAccount){
+                if (goodEmail && goodUserName && goodPassword){
                     mListener.signUp(email.getText().toString().toLowerCase(),
                             username.getText().toString().toLowerCase(),
                             pass.getText().toString());
@@ -108,5 +113,9 @@ public class SignupFragment extends Fragment {
         });
 
         return myFragmentView;
+    }
+
+    boolean isEmailValid(CharSequence email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 }
