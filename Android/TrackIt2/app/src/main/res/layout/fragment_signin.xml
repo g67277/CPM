@@ -3,38 +3,53 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="300dp"
+        android:id="@+id/textView3"
+        android:background="#ff2eeea3"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/signin_username"
+        android:hint="Username"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="157dp"
         android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp" />
+        android:layout_marginRight="30dp"
+        android:background="#ebffffff"
+        android:paddingLeft="15dp" />
 
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
+        android:hint="Password"
         android:ems="10"
         android:id="@+id/signin_pass"
-        android:layout_centerVertical="true"
+        android:layout_marginTop="43dp"
+        android:layout_below="@+id/signin_username"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp" />
+        android:layout_marginRight="30dp"
+        android:background="#ebffffff"
+        android:paddingLeft="15dp" />
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Sign in"
         android:id="@+id/signin_btn"
-        android:layout_marginTop="39dp"
-        android:layout_below="@+id/signin_pass"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/textView3"
+        android:layout_centerHorizontal="true"
         android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp" />
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="30dp" />
 
     <Button
         android:layout_width="wrap_content"
@@ -44,16 +59,33 @@
         android:layout_marginTop="37dp"
         android:layout_below="@+id/signin_btn"
         android:layout_alignLeft="@+id/signin_btn"
-        android:layout_alignStart="@+id/signin_btn" />
+        android:layout_alignStart="@+id/signin_btn"
+        android:layout_toLeftOf="@+id/signin_resetPass"
+        android:layout_toStartOf="@+id/signin_resetPass"
+        android:layout_marginRight="30dp" />
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:text="Reset Password"
         android:id="@+id/signin_resetPass"
         android:textSize="10dp"
         android:background="#ffededed"
-        android:layout_alignTop="@+id/signUPSecondary"
+        android:layout_alignBottom="@+id/signUPSecondary"
         android:layout_alignRight="@+id/signin_btn"
-        android:layout_alignEnd="@+id/signin_btn" />
+        android:layout_alignEnd="@+id/signin_btn"
+        android:layout_alignTop="@+id/signUPSecondary" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Track It"
+        android:id="@+id/textView4"
+        android:layout_marginTop="57dp"
+        android:textColor="#ebffffff"
+        android:textSize="60dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

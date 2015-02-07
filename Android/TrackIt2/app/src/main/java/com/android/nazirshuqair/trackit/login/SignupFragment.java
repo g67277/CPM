@@ -71,7 +71,7 @@ public class SignupFragment extends Fragment {
                     goodEmail = false;
                 }else if (!isEmailValid(email.getText().toString())){
                     email.setText("");
-                    email.setHint(Html.fromHtml("<font color='#FF0000'>Please enter a valid email</font> "));
+                    email.setHint(Html.fromHtml("<font color='#009688'>Please enter a valid email</font> "));
                     goodEmail = false;
                 } else{
                     goodEmail = true;

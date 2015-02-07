@@ -130,6 +130,8 @@ public class MainActivity extends ActionBarActivity
 
             tasksList.clear();
             populateTaskList();
+            tasksList.clear();
+            populateTaskList();
 
         }else if (requestCode == REQUEST_CODE2 && resultCode == RESULT_OK){
 
@@ -193,6 +195,12 @@ public class MainActivity extends ActionBarActivity
                 if (e == null){
                     masterFrag();
                     populateTaskList();
+
+                    if (defaultPrefs.getInt("accountCount", 0) == 0) {
+                        SharedPreferences.Editor edit = defaultPrefs.edit();
+                        edit.putInt("accountCount", 1);
+                        edit.apply();
+                    }
                 }else{
                     ParseException test = e;
                     if (e.getCode() == 101) {

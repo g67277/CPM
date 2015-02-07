@@ -32,8 +32,6 @@ public class DetailsActivity extends ActionBarActivity implements EditFragment.A
         //enables the back button in the action bar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //changes the action bar color
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ff113cd8")));
 
         Intent intent = getIntent();
 

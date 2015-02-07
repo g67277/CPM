@@ -3,6 +3,7 @@ package com.android.nazirshuqair.trackit.login;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -56,7 +57,15 @@ public class ResetPasswordFragment extends Fragment {
         resetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.resetEmail(emailReset.getText().toString().toLowerCase());
+                if (emailReset.getText().length() < 0){
+                    emailReset.setHint("Required");
+                    emailReset.setHintTextColor(getResources().getColor(R.color.material_deep_teal_500));
+                }else if(!isEmailValid(emailReset.getText().toString())){
+                        emailReset.setText("");
+                        emailReset.setHint(Html.fromHtml("<font color='#009688'>Please enter a valid email</font> "));
+                }else {
+                    mListener.resetEmail(emailReset.getText().toString().toLowerCase());
+                }
             }
         });
         Button resetCancel = (Button) myFragmentView.findViewById(R.id.reset_cancel);
@@ -69,6 +78,10 @@ public class ResetPasswordFragment extends Fragment {
 
         return myFragmentView;
     }
+
+        boolean isEmailValid(CharSequence email) {
+            return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        }
 
 
 }
