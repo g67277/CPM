@@ -8,8 +8,18 @@
 
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
+#import "Tasks.h"
 
-@interface MainViewController : UIViewController
+@interface MainViewController : UIViewController{
+    
+    IBOutlet UITableView* taskTableView;
+    
+    Tasks *currentCell;
+    
+}
+
+@property (nonatomic, assign) NSArray* tasksArray;
+
 
 -(IBAction)onClick:(id)sender;
 

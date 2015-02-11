@@ -42,6 +42,8 @@
 		815C92A51A8853E2005940BB /* IQUIView+IQKeyboardToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 815C92971A8853E2005940BB /* IQUIView+IQKeyboardToolbar.m */; };
 		815C92A61A8853E2005940BB /* IQKeyboardManager.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 815C929A1A8853E2005940BB /* IQKeyboardManager.bundle */; };
 		815C92A91A885FAB005940BB /* AddEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 815C92A81A885FAB005940BB /* AddEditViewController.m */; };
+		815C92AC1A8AF2EF005940BB /* TaskTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 815C92AB1A8AF2EF005940BB /* TaskTableViewCell.m */; };
+		815C92B11A8AF654005940BB /* Tasks.m in Sources */ = {isa = PBXBuildFile; fileRef = 815C92B01A8AF654005940BB /* Tasks.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -112,6 +114,10 @@
 		815C929A1A8853E2005940BB /* IQKeyboardManager.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = IQKeyboardManager.bundle; sourceTree = "<group>"; };
 		815C92A71A885FAB005940BB /* AddEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddEditViewController.h; sourceTree = "<group>"; };
 		815C92A81A885FAB005940BB /* AddEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddEditViewController.m; sourceTree = "<group>"; };
+		815C92AA1A8AF2EF005940BB /* TaskTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskTableViewCell.h; sourceTree = "<group>"; };
+		815C92AB1A8AF2EF005940BB /* TaskTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskTableViewCell.m; sourceTree = "<group>"; };
+		815C92AF1A8AF654005940BB /* Tasks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tasks.h; sourceTree = "<group>"; };
+		815C92B01A8AF654005940BB /* Tasks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tasks.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -170,16 +176,14 @@
 			children = (
 				815C92311A88211F005940BB /* AppDelegate.h */,
 				815C92321A88211F005940BB /* AppDelegate.m */,
-				815C92371A88211F005940BB /* MainViewController.h */,
-				815C92381A88211F005940BB /* MainViewController.m */,
+				815C92AE1A8AF316005940BB /* Main TableView */,
 				815C923A1A88211F005940BB /* Main.storyboard */,
 				815C923D1A88211F005940BB /* Images.xcassets */,
 				815C923F1A88211F005940BB /* LaunchScreen.xib */,
 				815C92341A88211F005940BB /* Track_It.xcdatamodeld */,
 				815C922D1A88211F005940BB /* Supporting Files */,
 				815C92771A883433005940BB /* SignUp/In */,
-				815C92A71A885FAB005940BB /* AddEditViewController.h */,
-				815C92A81A885FAB005940BB /* AddEditViewController.m */,
+				815C92AD1A8AF2FE005940BB /* Add/Edit/View */,
 			);
 			path = "Track It";
 			sourceTree = "<group>";
@@ -320,6 +324,28 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		815C92AD1A8AF2FE005940BB /* Add/Edit/View */ = {
+			isa = PBXGroup;
+			children = (
+				815C92A71A885FAB005940BB /* AddEditViewController.h */,
+				815C92A81A885FAB005940BB /* AddEditViewController.m */,
+			);
+			name = Add/Edit/View;
+			sourceTree = "<group>";
+		};
+		815C92AE1A8AF316005940BB /* Main TableView */ = {
+			isa = PBXGroup;
+			children = (
+				815C92371A88211F005940BB /* MainViewController.h */,
+				815C92381A88211F005940BB /* MainViewController.m */,
+				815C92AA1A8AF2EF005940BB /* TaskTableViewCell.h */,
+				815C92AB1A8AF2EF005940BB /* TaskTableViewCell.m */,
+				815C92AF1A8AF654005940BB /* Tasks.h */,
+				815C92B01A8AF654005940BB /* Tasks.m */,
+			);
+			name = "Main TableView";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -423,6 +449,7 @@
 			files = (
 				815C929E1A8853E2005940BB /* IQKeyboardManager.m in Sources */,
 				815C92A31A8853E2005940BB /* IQTitleBarButtonItem.m in Sources */,
+				815C92AC1A8AF2EF005940BB /* TaskTableViewCell.m in Sources */,
 				815C92A91A885FAB005940BB /* AddEditViewController.m in Sources */,
 				815C92A11A8853E2005940BB /* IQTextView.m in Sources */,
 				815C92A51A8853E2005940BB /* IQUIView+IQKeyboardToolbar.m in Sources */,
@@ -435,6 +462,7 @@
 				815C92A21A8853E2005940BB /* IQBarButtonItem.m in Sources */,
 				815C92361A88211F005940BB /* Track_It.xcdatamodeld in Sources */,
 				815C92391A88211F005940BB /* MainViewController.m in Sources */,
+				815C92B11A8AF654005940BB /* Tasks.m in Sources */,
 				815C92301A88211F005940BB /* main.m in Sources */,
 				815C929C1A8853E2005940BB /* IQUIView+Hierarchy.m in Sources */,
 				815C92A01A8853E2005940BB /* IQSegmentedNextPrevious.m in Sources */,

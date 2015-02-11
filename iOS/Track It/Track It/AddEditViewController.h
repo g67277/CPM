@@ -7,10 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Parse/Parse.h>
 
-@interface AddEditViewController : UIViewController
+@interface AddEditViewController : UIViewController{
+    
+    int priorityLevel;
+}
 @property (strong, nonatomic) IBOutlet UITextField *taskTitle;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *taskPriority;
 @property (strong, nonatomic) IBOutlet UITextView *taskDesc;
+
+
+- (IBAction)onClick:(id)sender;
 
 @end
