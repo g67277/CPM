@@ -8,19 +8,26 @@
 
 #import "MainViewController.h"
 #import "TaskTableViewCell.h"
+#import "AddEditViewController.h"
 
 @interface MainViewController ()
 
 @end
 
 @implementation MainViewController
-@synthesize tasksArray;
+
+-(void) viewWillAppear:(BOOL)animated{
+    [self retriveTasks];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
     currentCell = [[Tasks alloc] init];
+    taskArray = [[NSMutableArray alloc] init];
+    taskTableView.allowsMultipleSelectionDuringEditing = NO;
+
     
     PFUser *currentUser = [PFUser currentUser];
     if (currentUser) {
@@ -33,7 +40,6 @@
             [self notLoggedIn:@"signInView"];
         }
     }
-    [self retriveTasks];
 }
 
 
@@ -43,8 +49,18 @@
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (!error) {
             // The find succeeded.
-            tasksArray = objects;
-            NSLog(@"Successfully retrieved %lu scores.", (unsigned long)objects.count);
+            
+            [taskArray removeAllObjects];
+            for (int i = 0; i < objects.count; i++) {
+                PFObject* currentObject = objects[i];
+                Tasks *task = [[Tasks alloc]init];
+                task.title = currentObject[@"title"];
+                task.tdescription = currentObject[@"description"];
+                task.priority = [[currentObject objectForKey:@"priority"] intValue];
+                task.objectID = currentObject.objectId;
+                [taskArray addObject:task];
+            }
+            [taskTableView reloadData];
         } else {
             // Log details of the failure
             NSLog(@"Error: %@ %@", error, [error userInfo]);
@@ -61,13 +77,13 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
-    return [tasksArray count];
+    return [taskArray count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     TaskTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
-    currentCell = [tasksArray objectAtIndex:indexPath.row];
+    currentCell = [taskArray objectAtIndex:indexPath.row];
     [cell refreshCellWithInfo:currentCell.title priority:currentCell.priority];
     
     return cell;
@@ -77,13 +93,56 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
+// Override to support editing the table view.
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        
+        currentCell = [taskArray objectAtIndex:indexPath.row];
+
+        PFQuery *query = [PFQuery queryWithClassName:@"Tasks"];
+        
+        // Retrieve the object by id
+        [query getObjectInBackgroundWithId:currentCell.objectID block:^(PFObject *taskToDelete, NSError *error) {
+            
+            [taskToDelete deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                if (succeeded) {
+                    [taskArray removeObject:currentCell];
+                    [taskTableView reloadData];
+                }else{
+                    NSLog(@"Error: %@ %@", error, [error userInfo]);
+                }
+            }];
+        }];
+    }
+}
+
+
+#pragma Segue
+
+//------------------------------------- Segue methode -------------------------------------------------------------
+
+- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+    
+    if ([segue.identifier  isEqual: @"toDetail"]) {
+        AddEditViewController* detailView = segue.destinationViewController;
+        if (detailView != nil) {
+            UITableViewCell *cell = (UITableViewCell*)sender;
+            NSIndexPath *indexPath = [taskTableView indexPathForCell:cell];
+            
+            // get the string from the array based on the cell in the tabel view we clicked
+            
+            Tasks *selectedObject = [taskArray objectAtIndex:indexPath.row];
+            
+            detailView.currentCell = selectedObject;
+        }
+    }
+}
+
 
 -(IBAction)onClick:(UIButton*)sender{
     if (sender.tag == 0) {
-        //[PFUser logOut];
-        //[self notLoggedIn:@"signInView"];
-        [taskTableView reloadData];
-
+        [PFUser logOut];
+        [self notLoggedIn:@"signInView"];
     }
 }
 

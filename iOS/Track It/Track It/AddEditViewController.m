@@ -18,6 +18,15 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    if (self.currentCell != nil) {
+        submitEdit.tag = 2;
+        [submitEdit setTitle:@"Update" forState:UIControlStateNormal];
+        [self updateDetails];
+    }else{
+        submitEdit.tag = 1;
+        [submitEdit setTitle:@"Track" forState:UIControlStateNormal];
+    }
     // Do any additional setup after loading the view.
 }
 
@@ -25,6 +34,30 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+- (void) updateDetails{
+    
+    taskTitle.text = self.currentCell.title;
+    taskDesc.text = self.currentCell.tdescription;
+    switch (self.currentCell.priority) {
+        case 1:
+            taskPriority.selectedSegmentIndex = 0;
+            break;
+        case 2:
+            taskPriority.selectedSegmentIndex = 1;
+            break;
+        case 3:
+            taskPriority.selectedSegmentIndex = 2;
+            break;
+        case 4:
+            taskPriority.selectedSegmentIndex = 3;
+            break;
+        default:
+            break;
+    }
+    
+}
+
 
 -(IBAction)onClick:(UIButton*)sender{
     if (sender.tag == 0) {
@@ -39,6 +72,8 @@
         }
     }else if (sender.tag == 1){
         [self saveTask];
+    }else if (sender.tag == 2){
+        [self updateTask];
     }
 }
 
@@ -53,13 +88,42 @@
     task[@"priority"] = @(priorityLevel);
     [task saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Saved Successfully"
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Saved!"
                                                             message:nil
                                                            delegate:self
                                                   cancelButtonTitle:@"OK"
                                                  otherButtonTitles:nil];
             [alert show];
         } else {
+            NSLog(@"%@",error.userInfo);
+        }
+    }];
+}
+
+- (void) updateTask{
+    
+    PFQuery *query = [PFQuery queryWithClassName:@"Tasks"];
+    
+    // Retrieve the object by id
+    [query getObjectInBackgroundWithId:self.currentCell.objectID block:^(PFObject *task, NSError *error) {
+        
+        if (error == nil) {
+            task[@"title"] = taskTitle.text;
+            task[@"description"] = taskDesc.text;
+            task[@"priority"] = @(priorityLevel);
+            [task saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                if (succeeded) {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Updated!"
+                                                                    message:nil
+                                                                   delegate:nil
+                                                          cancelButtonTitle:@"OK"
+                                                          otherButtonTitles:nil];
+                    [alert show];
+                }else{
+                    NSLog(@"%@",error.userInfo);
+                }
+            }];
+        }else{
             NSLog(@"%@",error.userInfo);
         }
     }];

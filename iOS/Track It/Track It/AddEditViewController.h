@@ -8,15 +8,17 @@
 
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
+#import "Tasks.h"
 
 @interface AddEditViewController : UIViewController{
     
     int priorityLevel;
+    IBOutlet UIButton *submitEdit;
 }
 @property (strong, nonatomic) IBOutlet UITextField *taskTitle;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *taskPriority;
 @property (strong, nonatomic) IBOutlet UITextView *taskDesc;
-
+@property (strong, nonatomic) Tasks* currentCell;
 
 - (IBAction)onClick:(id)sender;
 

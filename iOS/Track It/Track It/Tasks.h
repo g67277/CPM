@@ -11,6 +11,8 @@
 @interface Tasks : NSObject
 
 @property (nonatomic, strong) NSString* title;
+@property (nonatomic, strong) NSString* tdescription;
+@property (nonatomic, strong) NSString* objectID;
 @property (nonatomic) int priority;
 
 @end

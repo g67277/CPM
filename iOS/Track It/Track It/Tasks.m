@@ -10,6 +10,6 @@
 
 @implementation Tasks
 
-@synthesize title, priority;
+@synthesize title, tdescription, priority, objectID;
 
 @end

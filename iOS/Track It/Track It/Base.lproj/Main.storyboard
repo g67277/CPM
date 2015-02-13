@@ -357,6 +357,7 @@
                                         <connections>
                                             <outlet property="taskName" destination="SLa-tY-ezu" id="5hB-6j-zks"/>
                                             <outlet property="taskPriority" destination="qLK-Vp-bfX" id="9Uq-Yk-wcq"/>
+                                            <segue destination="8xc-B8-6zt" kind="show" identifier="toDetail" id="BgE-Ff-jDA"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -448,6 +449,9 @@
                                     <segment title="!!!"/>
                                     <segment title="!!!!"/>
                                 </segments>
+                                <connections>
+                                    <action selector="onClick:" destination="8xc-B8-6zt" eventType="valueChanged" id="tHw-EQ-9c4"/>
+                                </connections>
                             </segmentedControl>
                             <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="INb-ge-Am0">
                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
@@ -483,19 +487,19 @@
                                 <exclude reference="INb-ge-Am0"/>
                             </mask>
                             <mask key="constraints">
+                                <exclude reference="7XW-VB-6Qn"/>
                                 <exclude reference="2me-XE-aQy"/>
                                 <exclude reference="DXo-Bz-GUN"/>
                                 <exclude reference="L51-FE-Y1G"/>
                                 <exclude reference="jFr-zL-rVb"/>
+                                <exclude reference="9r1-fn-8VO"/>
+                                <exclude reference="AWt-XM-O9Z"/>
+                                <exclude reference="slB-xn-q9Z"/>
                                 <exclude reference="b2B-cX-nox"/>
                                 <exclude reference="gxo-Ou-Q9X"/>
                                 <exclude reference="FNf-B2-z43"/>
                                 <exclude reference="U2W-Wn-s8O"/>
                                 <exclude reference="kEH-pf-Qbx"/>
-                                <exclude reference="9r1-fn-8VO"/>
-                                <exclude reference="AWt-XM-O9Z"/>
-                                <exclude reference="slB-xn-q9Z"/>
-                                <exclude reference="7XW-VB-6Qn"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
@@ -506,23 +510,24 @@
                                 <include reference="INb-ge-Am0"/>
                             </mask>
                             <mask key="constraints">
+                                <include reference="7XW-VB-6Qn"/>
                                 <include reference="2me-XE-aQy"/>
                                 <include reference="DXo-Bz-GUN"/>
                                 <include reference="L51-FE-Y1G"/>
                                 <include reference="jFr-zL-rVb"/>
+                                <include reference="9r1-fn-8VO"/>
+                                <include reference="AWt-XM-O9Z"/>
+                                <include reference="slB-xn-q9Z"/>
                                 <include reference="b2B-cX-nox"/>
                                 <include reference="gxo-Ou-Q9X"/>
                                 <include reference="FNf-B2-z43"/>
                                 <include reference="U2W-Wn-s8O"/>
                                 <include reference="kEH-pf-Qbx"/>
-                                <include reference="9r1-fn-8VO"/>
-                                <include reference="AWt-XM-O9Z"/>
-                                <include reference="slB-xn-q9Z"/>
-                                <include reference="7XW-VB-6Qn"/>
                             </mask>
                         </variation>
                     </view>
                     <connections>
+                        <outlet property="submitEdit" destination="INb-ge-Am0" id="2rD-s7-wRE"/>
                         <outlet property="taskDesc" destination="dWr-rG-Vyt" id="inC-Rn-T5i"/>
                         <outlet property="taskPriority" destination="WpN-eS-pWT" id="82I-HW-rhw"/>
                         <outlet property="taskTitle" destination="mEd-09-pky" id="qXW-es-8K0"/>
@@ -554,4 +559,7 @@
     <resources>
         <image name="awesome orange light iphone 6 wallpaper 34815 - abstract iphone 6 wallpapers-f81840" width="750" height="1334"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="BgE-Ff-jDA"/>
+    </inferredMetricsTieBreakers>
 </document>

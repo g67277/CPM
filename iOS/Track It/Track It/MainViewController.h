@@ -15,11 +15,9 @@
     IBOutlet UITableView* taskTableView;
     
     Tasks *currentCell;
+    NSMutableArray* taskArray;
     
 }
-
-@property (nonatomic, assign) NSArray* tasksArray;
-
 
 -(IBAction)onClick:(id)sender;
 
