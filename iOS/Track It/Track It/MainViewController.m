@@ -17,6 +17,8 @@
 @implementation MainViewController
 
 -(void) viewWillAppear:(BOOL)animated{
+    
+    self.navigationItem.title = @"Track It";
     [self retriveTasks];
 }
 
@@ -35,9 +37,9 @@
     } else {
         NSUserDefaults *userDefaults = [[NSUserDefaults alloc] init];
         if ([userDefaults boolForKey:@"signedUp"]) {
-            [self notLoggedIn:@"signUpView"];
-        }else{
             [self notLoggedIn:@"signInView"];
+        }else{
+            [self notLoggedIn:@"signUpView"];
         }
     }
 }

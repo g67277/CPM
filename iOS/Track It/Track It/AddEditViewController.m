@@ -20,10 +20,12 @@
     [super viewDidLoad];
     
     if (self.currentCell != nil) {
+        self.navigationItem.title = self.currentCell.title;
         submitEdit.tag = 2;
         [submitEdit setTitle:@"Update" forState:UIControlStateNormal];
         [self updateDetails];
     }else{
+        self.navigationItem.title = @"Track";
         submitEdit.tag = 1;
         [submitEdit setTitle:@"Track" forState:UIControlStateNormal];
     }

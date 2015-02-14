@@ -14,7 +14,7 @@
 @end
 
 @implementation SignUpInViewController
-@synthesize signUpEmail, signUpPass, signUpUsername, signInPass, signInUsername;
+@synthesize signUpEmail, signUpPass, signUpUsername, signInPass, signInUsername, resetPassEmail;
 
 
 
@@ -86,6 +86,14 @@
                                             NSLog(@"%@",error.userInfo);
                                         }
                                     }];
+}
+
+-(IBAction)onReset:(id)sender{
+    
+    [PFUser requestPasswordResetForEmailInBackground:resetPassEmail.text];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    MainViewController *viewController = (MainViewController *)[storyboard instantiateViewControllerWithIdentifier:@"signInView"];
+    [self presentViewController:viewController animated:YES completion:nil];
 }
 
 - (void) errorHandling:(long)code{

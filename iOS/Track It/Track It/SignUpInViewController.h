@@ -21,8 +21,10 @@
 @property (strong, nonatomic) IBOutlet UITextField *signUpPass;
 @property (strong, nonatomic) IBOutlet UITextField *signInUsername;
 @property (strong, nonatomic) IBOutlet UITextField *signInPass;
+@property (strong, nonatomic) IBOutlet UITextField *resetPassEmail;
 
 -(IBAction)onSignUP:(id)sender;
 -(IBAction)onSignIn:(id)sender;
+-(IBAction)onReset:(id)sender;
 
 @end

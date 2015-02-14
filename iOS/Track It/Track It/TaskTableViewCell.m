@@ -23,11 +23,11 @@
     
     taskName.text = incomingTask;
     taskName.textColor = [UIColor darkGrayColor];
-    taskName.font = [UIFont fontWithName:@"GoodTimesRg-Regular" size:15];
+    taskName.font = [UIFont fontWithName:@"GoodTimesRg-Regular" size:18];
     
     taskPriority.text = [self showPriority:incomingPriority];
-    taskPriority.textColor = [UIColor darkGrayColor];
-    taskPriority.font = [UIFont fontWithName:@"GoodTimesRg-Regular" size:15];
+    taskPriority.textColor = [UIColor whiteColor];
+    taskPriority.font = [UIFont fontWithName:@"GoodTimesRg-Regular" size:18];
  
 }
 
@@ -35,15 +35,27 @@
     
     switch (p) {
         case 1:
+            taskPriority.backgroundColor = [UIColor colorWithRed:51.0/255.0f
+                                                           green:238.0/255.0f
+                                                            blue:136.0/255.0f alpha:1];
             return @"!";
             break;
         case 2:
+            taskPriority.backgroundColor = [UIColor colorWithRed:51.0/255.0f
+                                                           green:238.0/255.0f
+                                                            blue:221.0/255.0f alpha:1];
             return @"!!";
             break;
         case 3:
+            taskPriority.backgroundColor = [UIColor colorWithRed:238.0/255.0f
+                                                           green:51.0/255.0f
+                                                            blue:68.0/255.0f alpha:1];
             return @"!!!";
             break;
         case 4:
+            taskPriority.backgroundColor = [UIColor colorWithRed:41.0/255.0f
+                                                           green:64.0/255.0f
+                                                            blue:106.0/255.0f alpha:1];
             return @"!!!!";
             break;
         default:
