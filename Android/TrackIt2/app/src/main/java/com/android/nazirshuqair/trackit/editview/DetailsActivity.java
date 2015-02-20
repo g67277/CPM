@@ -54,6 +54,7 @@ public class DetailsActivity extends ActionBarActivity implements EditFragment.A
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
+            setResult(RESULT_OK);
             finish();
         }
         return super.onOptionsItemSelected(item);

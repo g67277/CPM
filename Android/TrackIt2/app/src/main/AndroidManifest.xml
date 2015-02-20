@@ -24,6 +24,13 @@
             android:name="android.support.PARENT_ACTIVITY"
             android:value=".mainscreens.MainActivity" />
         </activity>
+        <receiver android:name=".mainscreens.MainActivity$ConnectionChangeReceiver"
+            android:label="NetworkConnection">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

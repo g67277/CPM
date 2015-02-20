@@ -75,6 +75,7 @@ public class MasterFragment extends Fragment {
         public void addTask();
         public void pushItemSelected(int _index);
         public void deleteTask(int _index);
+        public void refreshList();
     }
 
     private MasterListener mListener;
@@ -190,7 +191,7 @@ public class MasterFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
 
         MenuItem saveItem = menu.add("Add");
-        saveItem.setShowAsAction(1);
+        saveItem.setShowAsAction(2);
 
         saveItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
@@ -204,6 +205,15 @@ public class MasterFragment extends Fragment {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 mListener.logOut();
+                return false;
+            }
+        });
+        MenuItem refreshList = menu.add("Refresh");
+        refreshList.setShowAsAction(1);
+        refreshList.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                mListener.refreshList();
                 return false;
             }
         });

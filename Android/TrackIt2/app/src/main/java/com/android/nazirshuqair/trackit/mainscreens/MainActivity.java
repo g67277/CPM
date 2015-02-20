@@ -1,18 +1,28 @@
 package com.android.nazirshuqair.trackit.mainscreens;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.nazirshuqair.trackit.R;
 import com.android.nazirshuqair.trackit.editview.DetailsActivity;
 import com.android.nazirshuqair.trackit.login.ResetPasswordFragment;
 import com.android.nazirshuqair.trackit.login.SigninFragment;
 import com.android.nazirshuqair.trackit.login.SignupFragment;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.LogInCallback;
@@ -25,7 +35,11 @@ import com.parse.ParseUser;
 import com.parse.RequestPasswordResetCallback;
 import com.parse.SignUpCallback;
 
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -37,13 +51,21 @@ public class MainActivity extends ActionBarActivity
     public static final int REQUEST_CODE2 = 2;
 
     SharedPreferences defaultPrefs;
-    ArrayList<ParseObject> tasksList = new ArrayList<>();
+    static ArrayList<ParseObject> tasksList = new ArrayList<>();
+    ArrayList<ParseObject> dirtyCheck = new ArrayList<>();
+    private ConnectionChangeReceiver receiver;
+    static boolean isOnline;
+
     int taskViewed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        receiver = new ConnectionChangeReceiver();
+        registerReceiver(receiver, filter);
 
         Parse.initialize(this, "DhqgKTMhZTqw0YcwtJR5nin2d1ekmkpYU1JLnj1k", "RJpHneFnjHgqUMIi5X0vBxHddekXUUAFR9dl9fqx");
         ParseACL defaultACL = new ParseACL();
@@ -56,6 +78,7 @@ public class MainActivity extends ActionBarActivity
         ParseUser currentUser = ParseUser.getCurrentUser();
         if (currentUser != null) {
             populateTaskList();
+            timerHandler.postDelayed(timerRunnable, 0);
             masterFrag();
         } else {
             if (defaultPrefs.getInt("accountCount", 0) == 0){
@@ -66,6 +89,21 @@ public class MainActivity extends ActionBarActivity
         }
     }
 
+    public static Handler timerHandler = new Handler();
+    public Runnable timerRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+            if (isOnline() && ConnectionChangeReceiver.isOnline){
+                isOnline = true;
+                populateTaskList();
+                timerHandler.postDelayed(this, 20000);
+            }else{
+                isOnline = false;
+            }
+        }
+    };
+
 //------------------------------------------Retrive tasks-------------------------------------------------------
     public void populateTaskList(){
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Tasks");
@@ -73,7 +111,20 @@ public class MainActivity extends ActionBarActivity
             public void done(List<ParseObject> incomingTasksList, ParseException e) {
                 if (e == null) {
                     tasksList = (ArrayList) incomingTasksList;
-                    updateUI(tasksList);
+                    if (dirtyCheck.size() < 1) {
+                        populateDirtyList(tasksList);
+                        updateUI(tasksList);
+                    }else if (dirtyCheck.size() > tasksList.size() || dirtyCheck.size() < tasksList.size() ){
+                        updateUI(tasksList);
+                    }else{
+                        for (int i = 0; i < tasksList.size(); i++){
+                            if (dirtyCheck.get(i).getUpdatedAt().getTime() != tasksList.get(i).getUpdatedAt().getTime()){
+                                updateUI(tasksList);
+                                populateDirtyList(tasksList);
+                                break;
+                            }
+                        }
+                    }
                     Log.i("TESTING", "Retrieved " + incomingTasksList.size() + " Tasks");
                 } else {
                     Log.i("TESTING", "Error: " + e.getMessage() + " CODE: " + e.getCode());
@@ -82,6 +133,26 @@ public class MainActivity extends ActionBarActivity
         });
     }
 //--------------------------------------------------------------------------------------------------------------
+
+    public void populateDirtyList(ArrayList<ParseObject> incomingLing){
+        dirtyCheck.clear();
+        for (ParseObject task: incomingLing){
+            dirtyCheck.add(task);
+        }
+    }
+
+    //Checking Connectivity
+    protected boolean isOnline(){
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+
+        if (netInfo != null && netInfo.isConnectedOrConnecting()){
+            return true;
+        }else {
+            return false;
+        }
+    }
 
 //------------------------------------------Add/View/Delete tasks-------------------------------------------------------
     @Override
@@ -119,6 +190,11 @@ public class MainActivity extends ActionBarActivity
             }
         });
     }
+
+    @Override
+    public void refreshList() {
+        populateTaskList();
+    }
 //--------------------------------------------------------------------------------------------------------------
 
 //------------------------------------------Refresh List-------------------------------------------------------
@@ -127,15 +203,11 @@ public class MainActivity extends ActionBarActivity
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK){
-
             tasksList.clear();
-            populateTaskList();
-            tasksList.clear();
-            populateTaskList();
-
+            timerHandler.postDelayed(timerRunnable, 0);
         }else if (requestCode == REQUEST_CODE2 && resultCode == RESULT_OK){
-
             deleteTask(data.getIntExtra("position", 0));
+            timerHandler.postDelayed(timerRunnable, 0);
         }
     }
 
@@ -293,5 +365,44 @@ public class MainActivity extends ActionBarActivity
     }
 //-----------------------------------------------------------------------------------------------------------------
 
+    public static class ConnectionChangeReceiver extends BroadcastReceiver
+    {
+        boolean firstConnect = true;
+        public static boolean isOnline = true;
 
+        @Override
+        public void onReceive( Context context, Intent intent )
+        {
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService( Context.CONNECTIVITY_SERVICE );
+            NetworkInfo activeNetInfo = connectivityManager.getActiveNetworkInfo();
+            if ( activeNetInfo != null )
+            {
+                if (firstConnect){
+                    Toast.makeText(context, "Active Network Type : " + activeNetInfo.getTypeName(), Toast.LENGTH_SHORT).show();
+                    firstConnect = false;
+                    isOnline = true;
+                }
+            }if (activeNetInfo == null){
+
+                if (!firstConnect){
+                    Toast.makeText(context, "You're offline", Toast.LENGTH_SHORT).show();
+                    firstConnect = true;
+                    isOnline = false;
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        timerHandler.removeCallbacks(timerRunnable);
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        timerHandler.removeCallbacks(timerRunnable);
+    }
 }
