@@ -2,9 +2,12 @@ package com.android.nazirshuqair.trackit.editview;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -23,6 +26,7 @@ import java.text.ParseException;
 public class DetailsActivity extends ActionBarActivity implements EditFragment.AddListener, ViewFragment.EditDeleteListener{
 
     int position;
+    public static boolean isOnline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +105,26 @@ public class DetailsActivity extends ActionBarActivity implements EditFragment.A
                 }
             }
         });
+    }
+
+    @Override
+    public void refreshConnection() {
+        isOnline();
+    }
+
+    //Checking Connectivity
+    protected boolean isOnline(){
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+
+        if (netInfo != null && netInfo.isConnectedOrConnecting()){
+            isOnline = true;
+            return true;
+        }else {
+            isOnline = false;
+            return false;
+        }
     }
 
     @Override

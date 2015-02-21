@@ -1,7 +1,9 @@
 package com.android.nazirshuqair.trackit.editview;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -53,6 +55,7 @@ public class ViewFragment extends Fragment {
     public interface EditDeleteListener {
         public void deleteTask(int _index);
         public void edittask();
+        public void refreshConnection();
     }
 
     private EditDeleteListener mListener;
@@ -94,7 +97,17 @@ public class ViewFragment extends Fragment {
 
                 @Override
                 public void onClick(View view) {
-                    mListener.deleteTask(args.getInt(ARG_POSITION));
+                    mListener.refreshConnection();
+                    if (DetailsActivity.isOnline){
+                        mListener.deleteTask(args.getInt(ARG_POSITION));
+                    }else {
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                        alertDialogBuilder.setTitle("Offline")
+                                .setMessage("Please connect to delete Tasks")
+                                .setCancelable(true)
+                                .create()
+                                .show();
+                    }
                 }
             });
         }
@@ -120,11 +133,20 @@ public class ViewFragment extends Fragment {
 
         MenuItem saveItem = menu.add("Edit");
         saveItem.setShowAsAction(1);
-
         saveItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                mListener.edittask();
+                mListener.refreshConnection();
+                if (DetailsActivity.isOnline){
+                    mListener.edittask();
+                }else {
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                    alertDialogBuilder.setTitle("Offline")
+                            .setMessage("Please connect to edit Tasks")
+                            .setCancelable(true)
+                            .create()
+                            .show();
+                }
                 return false;
             }
         });

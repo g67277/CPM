@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.android.nazirshuqair.trackit.R;
 import com.android.nazirshuqair.trackit.editview.DetailsActivity;
+import com.android.nazirshuqair.trackit.editview.EditFragment;
 import com.android.nazirshuqair.trackit.login.ResetPasswordFragment;
 import com.android.nazirshuqair.trackit.login.SigninFragment;
 import com.android.nazirshuqair.trackit.login.SignupFragment;
@@ -54,7 +55,7 @@ public class MainActivity extends ActionBarActivity
     static ArrayList<ParseObject> tasksList = new ArrayList<>();
     ArrayList<ParseObject> dirtyCheck = new ArrayList<>();
     private ConnectionChangeReceiver receiver;
-    static boolean isOnline;
+    public static boolean isOnline;
 
     int taskViewed;
 
@@ -73,6 +74,8 @@ public class MainActivity extends ActionBarActivity
 
         //quick way to display sign-in or sign-up page
         defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        isOnline = isOnline();
 
         //get cached user
         ParseUser currentUser = ParseUser.getCurrentUser();
@@ -148,8 +151,10 @@ public class MainActivity extends ActionBarActivity
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
 
         if (netInfo != null && netInfo.isConnectedOrConnecting()){
+            isOnline = true;
             return true;
         }else {
+            isOnline = false;
             return false;
         }
     }
@@ -303,6 +308,11 @@ public class MainActivity extends ActionBarActivity
         ResetPasswordFragment frag = ResetPasswordFragment.newInstance();
         getFragmentManager().beginTransaction().replace(R.id.main_container, frag, ResetPasswordFragment.TAG).commit();
     }
+
+    @Override
+    public void refreshConnection() {
+        isOnline();
+    }
 //-----------------------------------------------------------------------------------------------------------------
 
 //------------------------------------------Log Out------------------------------------------------------
@@ -405,4 +415,5 @@ public class MainActivity extends ActionBarActivity
         super.onDestroy();
         timerHandler.removeCallbacks(timerRunnable);
     }
+
 }

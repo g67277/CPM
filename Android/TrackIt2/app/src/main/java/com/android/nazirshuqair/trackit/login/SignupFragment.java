@@ -1,7 +1,9 @@
 package com.android.nazirshuqair.trackit.login;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.android.nazirshuqair.trackit.R;
+import com.android.nazirshuqair.trackit.mainscreens.MainActivity;
 
 /**
  * Created by nazirshuqair on 2/3/15.
@@ -24,7 +27,7 @@ public class SignupFragment extends Fragment {
     EditText email;
     EditText pass;
     Button signupBtn;
-
+    Button signINRedirect;
     boolean goodEmail, goodUserName, goodPassword;
 
     //This is to create a new instance of the fragment
@@ -36,6 +39,7 @@ public class SignupFragment extends Fragment {
     public interface SignupListener {
         public void signUp(String _email, String _userName, String _password);
         public void signINRedirect();
+        public void refreshConnection();
     }
 
     private SignupListener mListener;
@@ -98,24 +102,64 @@ public class SignupFragment extends Fragment {
                 }
 
                 if (goodEmail && goodUserName && goodPassword){
-                    mListener.signUp(email.getText().toString().toLowerCase(),
-                            username.getText().toString().toLowerCase(),
-                            pass.getText().toString());
+                    mListener.refreshConnection();
+                    if (MainActivity.isOnline){
+                        mListener.signUp(email.getText().toString().toLowerCase(),
+                                username.getText().toString().toLowerCase(),
+                                pass.getText().toString());
+                    }else {
+                        alerts("Offline", "Please connect to Sign Up");
+                    }
                 }
             }
         });
-        Button signINRedirect = (Button) myFragmentView.findViewById(R.id.SignINSecondary);
+        signINRedirect = (Button) myFragmentView.findViewById(R.id.SignINSecondary);
         signINRedirect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.signINRedirect();
+                mListener.refreshConnection();
+                if (MainActivity.isOnline){
+                    mListener.signINRedirect();
+                }else {
+                    alerts("Offline", "Please connect to Sign In");
+                }
             }
         });
 
         return myFragmentView;
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        isConnected();
+    }
+
+    public void isConnected(){
+
+        if (!MainActivity.isOnline){
+            alerts("Offline", "Please connect to Sign Up");
+        }
+    }
+
     boolean isEmailValid(CharSequence email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    public void alerts(String _title, String _message){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        alertDialogBuilder.setTitle(_title)
+                .setMessage(_message)
+                .setCancelable(true)
+                .setPositiveButton("Refresh", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mListener.refreshConnection();
+                        isConnected();
+                    }
+                })
+                .create()
+                .show();
     }
 }

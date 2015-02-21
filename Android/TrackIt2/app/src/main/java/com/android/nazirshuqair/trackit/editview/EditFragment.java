@@ -1,8 +1,12 @@
 package com.android.nazirshuqair.trackit.editview;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +17,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.android.nazirshuqair.trackit.R;
+import com.android.nazirshuqair.trackit.mainscreens.MainActivity;
 
 /**
  * Created by nazirshuqair on 2/5/15.
@@ -24,16 +29,16 @@ public class EditFragment extends Fragment {
     private static final String ARG_TITLE = "ViewFragment.ARG_TITLE";
     private static final String ARG_DESCRIPTION = "ViewFragment.ARG_DESCRIPTION";
     private static final String ARG_PRIORITY = "ViewFragment.ARG_PRIORITY";
-    private static final String ARG_POSITION = "ViewFragment.ARG_POSITION";
 
-    int priorityNum;
+    int priorityNum = 0;
 
     EditText title;
     EditText description;
-    EditText timeSpent;
     RadioGroup priorityGroup;
     RadioButton priority1, priority2, priority3, priority4;
     Button trackBtn;
+    boolean goodTitle;
+    boolean goodPriority;
 
     //This is to create a new instance of the fragment
     public static EditFragment newInstance() {
@@ -57,6 +62,7 @@ public class EditFragment extends Fragment {
     public interface AddListener {
         public void addTask(String _title, String _description, int _priority);
         public void saveEdits(String _title, String _description, int _priority);
+        public void refreshConnection();
     }
 
     private AddListener mListener;
@@ -111,8 +117,40 @@ public class EditFragment extends Fragment {
         trackBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.addTask(title.getText().toString(), description.getText().toString(),
-                        priorityNum);
+
+                if (title.getText().length() < 1){
+                    title.setText("");
+                    title.setHint(Html.fromHtml("<font color='#ff0000'>Required</font> "));
+                    goodTitle = false;
+                }else {
+                    goodTitle = true;
+                }
+                if (priorityNum == 0){
+                    priorityGroup.setBackgroundColor(Color.parseColor("#ff0000"));
+                    goodPriority = false;
+                }else {
+                    goodPriority = true;
+                }
+                if (goodPriority && goodTitle){
+                    mListener.refreshConnection();
+                    if (DetailsActivity.isOnline){
+                        mListener.addTask(title.getText().toString(), description.getText().toString(),
+                                priorityNum);
+                    }else {
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                        alertDialogBuilder.setTitle("Offline")
+                                .setMessage("Please connect to add Tasks")
+                                .setCancelable(true)
+                                .setPositiveButton("Refresh", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        mListener.refreshConnection();
+                                    }
+                                })
+                                .create()
+                                .show();
+                    }
+                }
                 //Integer.parseInt(timeSpent.getText().toString())
             }
         });
@@ -134,8 +172,33 @@ public class EditFragment extends Fragment {
 
                 @Override
                 public void onClick(View view) {
-                    mListener.saveEdits(title.getText().toString(), description.getText().toString(),
-                            priorityNum);
+                    if (title.getText().length() < 1){
+                        title.setText("");
+                        title.setHint(Html.fromHtml("<font color='#ff0000'>Required</font> "));
+                        goodTitle = false;
+                    }
+                    if (goodTitle){
+                        if (goodPriority && goodTitle){
+                            mListener.refreshConnection();
+                            if (DetailsActivity.isOnline){
+                                mListener.saveEdits(title.getText().toString(), description.getText().toString(),
+                                        priorityNum);
+                            }else {
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                                alertDialogBuilder.setTitle("Offline")
+                                        .setMessage("Please connect to update Tasks")
+                                        .setCancelable(true)
+                                        .setPositiveButton("Refresh", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                mListener.refreshConnection();
+                                            }
+                                        })
+                                        .create()
+                                        .show();
+                            }
+                        }
+                    }
                 }
             });
         }

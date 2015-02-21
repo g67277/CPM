@@ -1,6 +1,7 @@
 package com.android.nazirshuqair.trackit.mainscreens;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.ActionMode;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import com.android.nazirshuqair.trackit.R;
 import com.parse.ParseObject;
@@ -76,6 +78,7 @@ public class MasterFragment extends Fragment {
         public void pushItemSelected(int _index);
         public void deleteTask(int _index);
         public void refreshList();
+        public void refreshConnection();
     }
 
     private MasterListener mListener;
@@ -173,7 +176,12 @@ public class MasterFragment extends Fragment {
 
             switch (item.getItemId()){
                 case R.id.taskDelete:
-                    mListener.deleteTask(taskSelected);
+                    mListener.refreshConnection();
+                    if (MainActivity.isOnline){
+                        mListener.deleteTask(taskSelected);
+                    }else {
+                        Toast.makeText(getActivity(), "Can't delete while offline", Toast.LENGTH_SHORT).show();
+                    }
                     actionMode.finish();
                     return true;
                 default:
@@ -189,14 +197,23 @@ public class MasterFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-
         MenuItem saveItem = menu.add("Add");
         saveItem.setShowAsAction(2);
 
         saveItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                mListener.addTask();
+                mListener.refreshConnection();
+                if (MainActivity.isOnline){
+                    mListener.addTask();
+                }else{
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                    alertDialogBuilder.setTitle("Offline")
+                            .setMessage("Please connect to add a new Task")
+                            .setCancelable(true)
+                            .create()
+                            .show();
+                }
                 return false;
             }
         });
@@ -213,7 +230,17 @@ public class MasterFragment extends Fragment {
         refreshList.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                mListener.refreshList();
+                mListener.refreshConnection();
+                if (MainActivity.isOnline){
+                    mListener.refreshList();
+                }else{
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                    alertDialogBuilder.setTitle("Offline")
+                            .setMessage("Please connect to sync")
+                            .setCancelable(true)
+                            .create()
+                            .show();
+                }
                 return false;
             }
         });
