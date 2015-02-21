@@ -208,7 +208,9 @@ public class MainActivity extends ActionBarActivity
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK){
-            tasksList.clear();
+            if (isOnline()){
+                tasksList.clear();
+            }
             timerHandler.postDelayed(timerRunnable, 0);
         }else if (requestCode == REQUEST_CODE2 && resultCode == RESULT_OK){
             deleteTask(data.getIntExtra("position", 0));

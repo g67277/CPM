@@ -176,9 +176,10 @@ public class EditFragment extends Fragment {
                         title.setText("");
                         title.setHint(Html.fromHtml("<font color='#ff0000'>Required</font> "));
                         goodTitle = false;
+                    }else{
+                        goodTitle = true;
                     }
                     if (goodTitle){
-                        if (goodPriority && goodTitle){
                             mListener.refreshConnection();
                             if (DetailsActivity.isOnline){
                                 mListener.saveEdits(title.getText().toString(), description.getText().toString(),
@@ -198,7 +199,7 @@ public class EditFragment extends Fragment {
                                         .show();
                             }
                         }
-                    }
+
                 }
             });
         }
