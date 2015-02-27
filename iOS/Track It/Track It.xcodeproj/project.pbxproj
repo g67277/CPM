@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8143A9E91AA00A66000C951E /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 8143A9E81AA00A66000C951E /* Reachability.m */; };
 		815C92301A88211F005940BB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 815C922F1A88211F005940BB /* main.m */; };
 		815C92331A88211F005940BB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 815C92321A88211F005940BB /* AppDelegate.m */; };
 		815C92361A88211F005940BB /* Track_It.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 815C92341A88211F005940BB /* Track_It.xcdatamodeld */; };
@@ -57,6 +58,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8143A9E71AA00A66000C951E /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		8143A9E81AA00A66000C951E /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		815C922A1A88211F005940BB /* Track It.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Track It.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		815C922E1A88211F005940BB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		815C922F1A88211F005940BB /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -151,9 +154,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8143A9E31AA006DF000C951E /* Reachability */ = {
+			isa = PBXGroup;
+			children = (
+				8143A9E71AA00A66000C951E /* Reachability.h */,
+				8143A9E81AA00A66000C951E /* Reachability.m */,
+			);
+			name = Reachability;
+			sourceTree = "<group>";
+		};
 		815C92211A88211F005940BB = {
 			isa = PBXGroup;
 			children = (
+				8143A9E31AA006DF000C951E /* Reachability */,
 				815C927A1A8853E2005940BB /* IQKeyBoardManager */,
 				815C92701A8823CB005940BB /* Frameworks */,
 				815C922C1A88211F005940BB /* Track It */,
@@ -461,6 +474,7 @@
 				815C929F1A8853E2005940BB /* IQKeyboardReturnKeyHandler.m in Sources */,
 				815C92A21A8853E2005940BB /* IQBarButtonItem.m in Sources */,
 				815C92361A88211F005940BB /* Track_It.xcdatamodeld in Sources */,
+				8143A9E91AA00A66000C951E /* Reachability.m in Sources */,
 				815C92391A88211F005940BB /* MainViewController.m in Sources */,
 				815C92B11A8AF654005940BB /* Tasks.m in Sources */,
 				815C92301A88211F005940BB /* main.m in Sources */,

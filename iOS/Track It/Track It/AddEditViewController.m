@@ -18,6 +18,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    priorityLevel = 1;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityDidChange) name:kReachabilityChangedNotification object:nil];
+    
+    [self reachabilityDidChange];
     
     if (self.currentCell != nil) {
         self.navigationItem.title = self.currentCell.title;
@@ -73,62 +77,110 @@
             priorityLevel = 4;
         }
     }else if (sender.tag == 1){
-        [self saveTask];
+        if (isOnline) {
+            [self saveTask];
+        }else{
+            [self alertMethod:@"Offline" message:@"Please make sure you're connected and try again"];
+        }
     }else if (sender.tag == 2){
-        [self updateTask];
+        if (isOnline) {
+            [self updateTask];
+        }else{
+            [self alertMethod:@"Offline" message:@"Please make sure you're connected and try again"];
+        }
     }
 }
 
 - (void) saveTask{
     
-    PFACL *defaultACL = [PFACL ACLWithUser:[PFUser currentUser]];
-    [PFACL setDefaultACL:defaultACL withAccessForCurrentUser:YES];
+    if (taskTitle.text.length < 1) {
+        taskTitle.placeholder = @"Required";
+        goodTitle = false;
+    }else{
+        goodTitle = true;
+    }
     
-    PFObject *task = [PFObject objectWithClassName:@"Tasks"];
-    task[@"title"] = taskTitle.text;
-    task[@"description"] = taskDesc.text;
-    task[@"priority"] = @(priorityLevel);
-    [task saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        if (succeeded) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Saved!"
-                                                            message:nil
-                                                           delegate:self
-                                                  cancelButtonTitle:@"OK"
-                                                 otherButtonTitles:nil];
-            [alert show];
-        } else {
-            NSLog(@"%@",error.userInfo);
-        }
-    }];
+    if (goodTitle) {
+        PFACL *defaultACL = [PFACL ACLWithUser:[PFUser currentUser]];
+        [PFACL setDefaultACL:defaultACL withAccessForCurrentUser:YES];
+        
+        PFObject *task = [PFObject objectWithClassName:@"Tasks"];
+        task[@"title"] = taskTitle.text;
+        task[@"description"] = taskDesc.text;
+        task[@"priority"] = @(priorityLevel);
+        [task saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            if (succeeded) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Saved!"
+                                                                message:nil
+                                                               delegate:self
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles:nil];
+                [alert show];
+            } else {
+                NSLog(@"%@",error.userInfo);
+            }
+        }];
+    }
 }
 
 - (void) updateTask{
     
-    PFQuery *query = [PFQuery queryWithClassName:@"Tasks"];
+    if (taskTitle.text.length < 1) {
+        taskTitle.placeholder = @"Required";
+        goodTitle = false;
+    }else{
+        goodTitle = true;
+    }
     
-    // Retrieve the object by id
-    [query getObjectInBackgroundWithId:self.currentCell.objectID block:^(PFObject *task, NSError *error) {
+    if (goodTitle) {
+        PFQuery *query = [PFQuery queryWithClassName:@"Tasks"];
         
-        if (error == nil) {
-            task[@"title"] = taskTitle.text;
-            task[@"description"] = taskDesc.text;
-            task[@"priority"] = @(priorityLevel);
-            [task saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                if (succeeded) {
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Updated!"
-                                                                    message:nil
-                                                                   delegate:nil
-                                                          cancelButtonTitle:@"OK"
-                                                          otherButtonTitles:nil];
-                    [alert show];
-                }else{
-                    NSLog(@"%@",error.userInfo);
-                }
-            }];
-        }else{
-            NSLog(@"%@",error.userInfo);
-        }
-    }];
+        // Retrieve the object by id
+        [query getObjectInBackgroundWithId:self.currentCell.objectID block:^(PFObject *task, NSError *error) {
+            
+            if (error == nil) {
+                task[@"title"] = taskTitle.text;
+                task[@"description"] = taskDesc.text;
+                task[@"priority"] = @(priorityLevel);
+                [task saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                    if (succeeded) {
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Updated!"
+                                                                        message:nil
+                                                                       delegate:nil
+                                                              cancelButtonTitle:@"OK"
+                                                              otherButtonTitles:nil];
+                        [alert show];
+                    }else{
+                        NSLog(@"%@",error.userInfo);
+                    }
+                }];
+            }else{
+                NSLog(@"%@",error.userInfo);
+            }
+        }];
+    }
+}
+
+- (void)reachabilityDidChange {
+    
+    Reachability *reach = [Reachability reachabilityForInternetConnection];
+    if ([reach isReachable]){
+        isOnline = true;
+        NSLog(@"Reachable");
+    }else{
+        isOnline = false;
+        [self alertMethod:@"Offline" message:@"Please make sure you're connected and try again"];
+        NSLog(@"Unreachable");
+    }
+}
+
+- (void) alertMethod:(NSString*) mtitle message:(NSString*) message{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:mtitle
+                                                    message:message
+                                                   delegate:nil
+                                          cancelButtonTitle:@"OK"
+                                          otherButtonTitles:nil];
+    [alert show];
 }
 
 #pragma mark - Alert view delegate

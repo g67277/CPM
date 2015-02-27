@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "Reachability.h"
 #import <Parse/Parse.h>
 
 @interface AppDelegate ()
@@ -23,6 +24,12 @@
     // https://parse.com/docs/ios_guide#localdatastore/iOS
     //[Parse enableLocalDatastore];
     
+    // Initialize Reachability
+    Reachability *reachability = [Reachability reachabilityWithHostname:@"www.google.com"];
+    
+    // Start Monitoring
+    [reachability startNotifier];
+    
     // Initialize Parse.
     [Parse setApplicationId:@"DhqgKTMhZTqw0YcwtJR5nin2d1ekmkpYU1JLnj1k"
                   clientKey:@"RJpHneFnjHgqUMIi5X0vBxHddekXUUAFR9dl9fqx"];
@@ -31,10 +38,9 @@
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
     NSUserDefaults *userDefaults = [[NSUserDefaults alloc] init];
-    
     if ([userDefaults boolForKey:@"signedUp"]){
-        
     }
+    
     return YES;
 }
 

@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
 #import "Tasks.h"
+#import "Reachability.h"
+
+@class SignUpInViewController;
 
 @interface MainViewController : UIViewController{
     
@@ -16,7 +19,9 @@
     
     Tasks *currentCell;
     NSMutableArray* taskArray;
-    
+    SignUpInViewController* logins;
+
+    Boolean isOnline;
 }
 
 -(IBAction)onClick:(id)sender;

@@ -6,14 +6,18 @@
 //  Copyright (c) 2015 Me Time Studios. All rights reserved.
 //
 
+#import "MainViewController.h"
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
+#import "Reachability.h"
+@class MainViewController;
 
 @interface SignUpInViewController : UIViewController{
     
     Boolean goodEmail;
     Boolean goodUsername;
     Boolean goodPassword;
+    Boolean isOnline;
 }
 
 @property (strong, nonatomic) IBOutlet UITextField *signUpEmail;

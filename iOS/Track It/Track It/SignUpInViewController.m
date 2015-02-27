@@ -7,7 +7,6 @@
 //
 
 #import "SignUpInViewController.h"
-#import "MainViewController.h"
 
 @interface SignUpInViewController ()
 
@@ -21,7 +20,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityDidChange) name:kReachabilityChangedNotification object:nil];
     
+    [self reachabilityDidChange];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -34,6 +35,10 @@
     
     if (signUpEmail.text.length < 1) {
         signUpEmail.placeholder = @"Required";
+        goodEmail = false;
+    }else if(![self NSStringIsValidEmail:signUpEmail.text]){
+        signUpEmail.text = @"";
+        signUpEmail.placeholder = @"Please enter a valid email address";
         goodEmail = false;
     }else{
         goodEmail = true;
@@ -49,51 +54,73 @@
         goodPassword = false;
     }else if(signUpPass.text.length < 4){
         [self alertMethod:@"Too Short" message:@"Password needs to be at least 4 characters"];
+        signUpPass.text = @"";
         goodPassword = false;
     }else{
         goodPassword = true;
     }
     
     if (goodPassword && goodUsername && goodEmail) {
-        PFUser *user = [PFUser user];
-        user.email = signUpEmail.text;
-        user.username = signUpUsername.text;
-        user.password = signUpPass.text;
+        if (isOnline) {
+            PFUser *user = [PFUser user];
+            user.email = signUpEmail.text;
+            user.username = signUpUsername.text;
+            user.password = signUpPass.text;
+            
+            [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                if (!error) {
+                    //move to next screen
+                    NSUserDefaults* userDefaults = [[NSUserDefaults alloc] init];
+                    [userDefaults setBool:true forKey:@"signedUp"];
+                    [self successful];
+                }else{
+                    [self errorHandling:error.code];
+                    NSLog(@"%@",error.userInfo);
+                }
+            }];
+        }else{
+            [self alertMethod:@"Offline" message:@"Please make sure you're connected and try again"];
+        }
         
-        [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            if (!error) {
-                //move to next screen
-                NSUserDefaults* userDefaults = [[NSUserDefaults alloc] init];
-                [userDefaults setBool:true forKey:@"signedUp"];
-                [self successful];
-            }else{
-                [self errorHandling:error.code];
-                NSLog(@"%@",error.userInfo);
-            }
-        }];
     };
     
 }
 
 -(IBAction)onSignIn:(id)sender{
     
-    [PFUser logInWithUsernameInBackground:signInUsername.text password:signInPass.text
-                                    block:^(PFUser *user, NSError *error) {
-                                        if (user) {
-                                            [self successful];
-                                        } else {
-                                            [self errorHandling:error.code];
-                                            NSLog(@"%@",error.userInfo);
-                                        }
-                                    }];
+    if (isOnline) {
+        [PFUser logInWithUsernameInBackground:signInUsername.text password:signInPass.text
+                                        block:^(PFUser *user, NSError *error) {
+                                            if (user) {
+                                                [self successful];
+                                            } else {
+                                                [self errorHandling:error.code];
+                                                NSLog(@"%@",error.userInfo);
+                                            }
+                                        }];
+    }else{
+        [self alertMethod:@"Offline" message:@"Please make sure you're connected and try again"];
+    }
+    
 }
 
 -(IBAction)onReset:(id)sender{
     
-    [PFUser requestPasswordResetForEmailInBackground:resetPassEmail.text];
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    MainViewController *viewController = (MainViewController *)[storyboard instantiateViewControllerWithIdentifier:@"signInView"];
-    [self presentViewController:viewController animated:YES completion:nil];
+    if (isOnline) {
+        if ([self NSStringIsValidEmail:resetPassEmail.text]) {
+            [PFUser requestPasswordResetForEmailInBackground:resetPassEmail.text];
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+            MainViewController *viewController = (MainViewController *)[storyboard instantiateViewControllerWithIdentifier:@"signInView"];
+            [self presentViewController:viewController animated:YES completion:nil];
+        }else{
+            resetPassEmail.text = @"";
+            resetPassEmail.placeholder = @"Please enter a valid email";
+        }
+        
+    }else{
+        [self alertMethod:@"Offline" message:@"Please make sure you're connected and try again"];
+    }
+    
 }
 
 - (void) errorHandling:(long)code{
@@ -146,6 +173,31 @@
         [textField resignFirstResponder];
     }
     return NO;
+}
+
+-(BOOL) NSStringIsValidEmail:(NSString *)checkString
+{
+    BOOL stricterFilter = NO; // Discussion http://blog.logichigh.com/2010/09/02/validating-an-e-mail-address/
+    NSString *stricterFilterString = @"[A-Z0-9a-z\\._%+-]+@([A-Za-z0-9-]+\\.)+[A-Za-z]{2,4}";
+    NSString *laxString = @".+@([A-Za-z0-9-]+\\.)+[A-Za-z]{2}[A-Za-z]*";
+    NSString *emailRegex = stricterFilter ? stricterFilterString : laxString;
+    NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
+    return [emailTest evaluateWithObject:checkString];
+}
+
+//-------------------------------------------Network monitoring--------------------------------------------
+
+- (void)reachabilityDidChange {
+    
+    Reachability *reach = [Reachability reachabilityForInternetConnection];
+    if ([reach isReachable]){
+        isOnline = true;
+        NSLog(@"Reachable");
+    }else{
+        isOnline = false;
+        [self alertMethod:@"Offline" message:@"Please make sure you're connected and try again"];
+        NSLog(@"Unreachable");
+    }
 }
 
 
